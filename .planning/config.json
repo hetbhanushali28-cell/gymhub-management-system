@@ -1,0 +1,16 @@
+{
+  "mode": "balanced",
+  "project": "gym-management-system",
+  "checklist": [
+    "Frontend with Tailwind CSS",
+    "React & State Management",
+    "Backend REST API",
+    "MongoDB & Mongoose",
+    "Data Validation",
+    "Authentication & Authorization (Role-based)",
+    "Real-Time Features (Socket.IO)",
+    "Docker Containerization",
+    "DevOps & Deployment"
+  ]
+}
+

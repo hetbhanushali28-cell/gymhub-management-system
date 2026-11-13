@@ -1,0 +1,56 @@
+services:
+  # Local MongoDB Container
+  mongo:
+    image: mongo:6-jammy
+    container_name: gymhub_mongo
+    restart: unless-stopped
+    ports:
+      # Mapped to 27018 on host to prevent port collision with host Windows MongoDB service on 27017
+      - "27018:27017"
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - gymhub_network
+
+  # Node.js + Express Backend Server
+  server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    container_name: gymhub_server
+    restart: unless-stopped
+    ports:
+      - "5000:5000"
+    environment:
+      - PORT=5000
+      - MONGO_URI=mongodb://mongo:27017/gym-management
+      - JWT_SECRET=gym_secret_key_2026_docker
+      - JWT_EXPIRES_IN=30d
+      - NODE_ENV=production
+    depends_on:
+      - mongo
+    networks:
+      - gymhub_network
+
+  # React + Vite Frontend Application (Nginx)
+  client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    container_name: gymhub_client
+    restart: unless-stopped
+    ports:
+      - "5173:80"
+    depends_on:
+      - server
+    networks:
+      - gymhub_network
+
+volumes:
+  mongo_data:
+    driver: local
+
+networks:
+  gymhub_network:
+    driver: bridge
+

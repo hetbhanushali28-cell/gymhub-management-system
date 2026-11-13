@@ -1,0 +1,11 @@
+@import "tailwindcss";
+
+nav h1 {
+  color: #fff;
+  margin: 0;
+}
+
+body {
+  font-family: 'Inter', system-ui, Avenir, Helvetica, Arial, sans-serif;
+  background-color: #f8fafc; /* slate-50 */
+}
