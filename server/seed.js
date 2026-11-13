@@ -8,11 +8,13 @@ const GymClass = require("./models/GymClass");
 const Booking = require("./models/Booking");
 const MembershipTier = require("./models/MembershipTier");
 
-const seedDatabase = async () => {
+const seedDatabase = async (shouldExit = true) => {
   try {
-    const mongoUri = process.env.MONGO_URI || "mongodb://127.0.0.1:27017/gym-management";
-    await mongoose.connect(mongoUri);
-    console.log("Connected to MongoDB:", mongoUri);
+    if (mongoose.connection.readyState !== 1) {
+      const mongoUri = process.env.MONGO_URI || "mongodb://127.0.0.1:27017/gym-management";
+      await mongoose.connect(mongoUri);
+      console.log("Connected to MongoDB:", mongoUri);
+    }
 
     // Clear existing data
     await Booking.deleteMany();
@@ -493,11 +495,21 @@ const seedDatabase = async () => {
     console.log(`Created sample booking for ${member1.name} on '${classes[0].title}'`);
 
     console.log("Database seeded successfully!");
-    process.exit(0);
+    if (shouldExit) {
+      process.exit(0);
+    }
+    return { success: true, classesCount: classes.length };
   } catch (error) {
     console.error("Error seeding database:", error);
-    process.exit(1);
+    if (shouldExit) {
+      process.exit(1);
+    }
+    throw error;
   }
 };
 
-seedDatabase();
+if (require.main === module) {
+  seedDatabase(true);
+}
+
+module.exports = { seedDatabase };

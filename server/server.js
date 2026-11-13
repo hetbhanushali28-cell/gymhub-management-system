@@ -67,11 +67,36 @@ app.use("/api/classes", require("./routes/classRoutes"));
 app.use("/api/bookings", require("./routes/bookingRoutes"));
 app.use("/api/tiers", require("./routes/tierRoutes"));
 
+// One-click Cloud Database Seed Endpoint
+app.get("/api/seed-database", async (req, res) => {
+  try {
+    const { seedDatabase } = require("./seed");
+    const result = await seedDatabase(false);
+    res.json({ success: true, message: "Cloud MongoDB Atlas database seeded successfully with 22 classes and all user tiers!", ...result });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
 // Error Middleware
 app.use(errorHandler);
 
 const PORT = process.env.PORT || 5000;
 
-server.listen(PORT, () => {
+server.listen(PORT, async () => {
   console.log(`Server running on port ${PORT}`);
+
+  // Auto-seed if cloud database is empty on first deployment
+  try {
+    const GymClass = require("./models/GymClass");
+    const count = await GymClass.countDocuments();
+    if (count === 0) {
+      console.log("Database has 0 classes. Automatically seeding classes and user tiers...");
+      const { seedDatabase } = require("./seed");
+      await seedDatabase(false);
+      console.log("Auto-seeding complete!");
+    }
+  } catch (err) {
+    console.error("Auto-seed error on startup:", err.message);
+  }
 });
