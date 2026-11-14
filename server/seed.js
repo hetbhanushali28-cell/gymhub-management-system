@@ -17,9 +17,10 @@ const seedDatabase = async (shouldExit = true) => {
     }
 
     // Clear existing data
-    await Booking.deleteMany();
-    await GymClass.deleteMany();
-    await User.deleteMany();
+    await Booking.deleteMany({});
+    await GymClass.deleteMany({});
+    await User.deleteMany({});
+    await MembershipTier.deleteMany({});
     console.log("Cleared existing data");
 
     // Create Admin User
