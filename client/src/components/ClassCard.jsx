@@ -21,10 +21,12 @@ function ClassCard({ gymClass, onBookingSuccess }) {
     Math.round(((gymClass.bookedCount || 0) / (gymClass.capacity || 1)) * 100)
   );
 
+  const isAdmin = user && user.role === "admin";
   const isNonMember =
     user &&
     (user.membershipTier === "Non-Member" ||
       user.membershipStatus === "Expired" ||
+      user.membershipStatus === "Inactive" ||
       user.daysRemaining <= 0);
 
   const handleBook = async () => {
@@ -33,8 +35,7 @@ function ClassCard({ gymClass, onBookingSuccess }) {
       return;
     }
 
-    if (user.role === "admin") {
-      alert("Administrators cannot book member classes.");
+    if (isAdmin) {
       return;
     }
 
@@ -163,9 +164,11 @@ function ClassCard({ gymClass, onBookingSuccess }) {
         {/* Action Button */}
         <button
           onClick={handleBook}
-          disabled={loading || isFull || success}
+          disabled={loading || isFull || success || isAdmin}
           className={`mt-4 w-full rounded-xl py-3 text-sm font-bold shadow-sm transition-all duration-200 cursor-pointer ${
-            success
+            isAdmin
+              ? "bg-slate-200 text-slate-500 cursor-not-allowed"
+              : success
               ? "bg-emerald-600 text-white cursor-default"
               : isFull
               ? "bg-slate-200 text-slate-400 cursor-not-allowed"
@@ -176,6 +179,8 @@ function ClassCard({ gymClass, onBookingSuccess }) {
         >
           {loading
             ? "Booking Spot..."
+            : isAdmin
+            ? "Admin View Only"
             : success
             ? "Booked Successfully ✓"
             : isFull

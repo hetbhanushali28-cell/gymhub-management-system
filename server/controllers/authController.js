@@ -86,9 +86,9 @@ const loginUser = async (req, res) => {
         name: user.name,
         email: user.email,
         role: user.role,
-        membershipTier: user.membershipTier || "VIP Elite",
-        membershipStatus: user.membershipStatus || "Active",
-        daysRemaining: user.daysRemaining || 245,
+        membershipTier: user.membershipTier || "Non-Member",
+        membershipStatus: user.membershipStatus || "Inactive",
+        daysRemaining: user.daysRemaining ?? 0,
         token: generateToken(user._id, user.role),
       });
     }

@@ -79,37 +79,37 @@ function Register() {
   };
 
   return (
-    <div className="relative min-h-[calc(100vh-76px)] flex items-center justify-center bg-slate-950 px-6 py-12 overflow-hidden">
+    <div className="relative min-h-[calc(100vh-76px)] flex items-center justify-center bg-slate-950 px-3 sm:px-6 py-6 sm:py-12 overflow-hidden">
       {/* Background glow */}
       <div className="absolute inset-0 opacity-20 pointer-events-none">
         <div className="absolute -top-24 right-1/3 w-96 h-96 rounded-full bg-amber-500 blur-[130px]" />
         <div className="absolute bottom-10 left-1/4 w-80 h-80 rounded-full bg-indigo-600 blur-[120px]" />
       </div>
 
-      <div className="relative z-10 w-full max-w-lg rounded-3xl bg-slate-900/90 backdrop-blur-xl p-8 sm:p-10 shadow-2xl border border-slate-800">
+      <div className="relative z-10 w-full max-w-lg rounded-2xl sm:rounded-3xl bg-slate-900/90 backdrop-blur-xl p-4 sm:p-8 sm:p-10 shadow-2xl border border-slate-800">
         <div className="mb-6 text-center">
           <span className="inline-block rounded-full bg-amber-500/10 px-3 py-1 text-[10px] font-black uppercase tracking-widest text-amber-400 border border-amber-500/20 mb-3">
             Private Members Club
           </span>
-          <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-white uppercase font-serif">
+          <h1 className="text-xl sm:text-2xl sm:text-3xl font-black tracking-normal sm:tracking-tight text-white uppercase font-serif break-words">
             Elite Athletic
           </h1>
-          <p className="mt-1 text-xs text-slate-400 tracking-wider">
+          <p className="mt-1 text-xs text-slate-400 tracking-normal sm:tracking-wider">
             Choose your membership tier pass or sign up as a guest
           </p>
         </div>
 
         {/* Tabbed Toggle: Member Login vs Request Access */}
-        <div className="flex rounded-xl bg-slate-950 p-1 border border-slate-800 mb-6">
+        <div className="flex rounded-xl bg-slate-950 p-1 border border-slate-800 mb-5 sm:mb-6">
           <Link
             to="/login"
-            className="flex-1 py-2 text-xs font-bold text-slate-400 hover:text-white text-center transition"
+            className="flex-1 py-2 px-2 text-[11px] sm:text-xs font-bold text-slate-400 hover:text-white text-center whitespace-nowrap transition"
           >
             Member Login
           </Link>
           <button
             type="button"
-            className="flex-1 py-2 text-xs font-bold text-amber-400 bg-slate-900 rounded-lg shadow-sm border border-slate-800"
+            className="flex-1 py-2 px-2 text-[11px] sm:text-xs font-bold text-amber-400 bg-slate-900 rounded-lg shadow-sm border border-slate-800 text-center whitespace-nowrap transition"
           >
             Request Access
           </button>
@@ -127,7 +127,7 @@ function Register() {
             <label className="mb-1.5 block text-[11px] font-bold uppercase tracking-wider text-amber-400">
               Select Membership Tier Pass
             </label>
-            <div className="grid grid-cols-2 gap-2">
+            <div className="grid grid-cols-1 min-[420px]:grid-cols-2 gap-2">
               {[
                 { id: "VIP Elite", name: "The VIP Elite", price: "$10,000 / yr", badge: "Exclusive" },
                 { id: "Annual", name: "The Annual", price: "$3,500 / yr", badge: "Popular" },
@@ -170,7 +170,7 @@ function Register() {
               name="name"
               value={formData.name}
               onChange={handleChange}
-              placeholder="e.g. David Guest or Alexander Sterling"
+              placeholder="e.g. Alexander Sterling"
               className="w-full rounded-xl border border-slate-800 bg-slate-950 px-4 py-2.5 text-xs text-white placeholder-slate-600 outline-none transition focus:border-amber-500 focus:ring-1 focus:ring-amber-500"
             />
           </div>

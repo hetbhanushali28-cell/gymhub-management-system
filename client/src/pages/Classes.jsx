@@ -1,13 +1,23 @@
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import useAuth from "../hooks/useAuth";
 import api from "../services/api";
 import socket from "../services/socket";
 import ClassCard from "../components/ClassCard";
 import Loading from "../components/Loading";
 
 function Classes() {
+  const { user } = useAuth();
   const [classes, setClasses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  const isGuestOrInactive =
+    user &&
+    (user.membershipTier === "Non-Member" ||
+      user.membershipStatus === "Expired" ||
+      user.membershipStatus === "Inactive" ||
+      user.daysRemaining <= 0);
 
   // Search & Filter state
   const [searchQuery, setSearchQuery] = useState("");
@@ -119,6 +129,29 @@ function Classes() {
             Browse our schedule, check real-time available spots, and reserve your workout session.
           </p>
         </div>
+
+        {/* Guest / Non-Member Warning Banner */}
+        {isGuestOrInactive && (
+          <div className="mb-8 rounded-2xl bg-amber-500/10 border border-amber-500/30 p-4 text-amber-300 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div className="flex items-center gap-3 text-center sm:text-left">
+              <span className="text-3xl shrink-0">🔒</span>
+              <div>
+                <p className="text-sm font-bold text-amber-200">
+                  Guest Access Mode — Active Membership Required to Book
+                </p>
+                <p className="text-xs text-amber-300/80 mt-0.5">
+                  You are viewing the schedule with guest access. Class reservations require an active membership pass.
+                </p>
+              </div>
+            </div>
+            <Link
+              to="/member/dashboard"
+              className="shrink-0 rounded-xl bg-amber-500 hover:bg-amber-400 px-4 py-2 text-xs font-bold text-slate-950 uppercase tracking-wider transition shadow-md"
+            >
+              ⚡ Activate Pass
+            </Link>
+          </div>
+        )}
 
         {/* Search & Filter Bar */}
         <div className="mb-8 space-y-4 bg-white p-5 rounded-2xl shadow-sm border border-slate-200">

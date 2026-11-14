@@ -48,4 +48,41 @@ const admin = (req, res, next) => {
   });
 };
 
-module.exports = { protect, admin };
+// Require active membership pass for reserving classes
+const requireActiveMembership = (req, res, next) => {
+  if (!req.user) {
+    return res.status(401).json({
+      success: false,
+      message: "Not authorized",
+    });
+  }
+
+  if (req.user.role === "admin") {
+    return res.status(403).json({
+      success: false,
+      message: "Administrators cannot book member classes.",
+    });
+  }
+
+  const isNonMember = req.user.membershipTier === "Non-Member";
+  const isExpired = req.user.membershipStatus === "Expired";
+  const isInactive = req.user.membershipStatus === "Inactive";
+  const hasZeroDays =
+    typeof req.user.daysRemaining === "number" && req.user.daysRemaining <= 0;
+  const isDatePast =
+    req.user.membershipEndDate &&
+    new Date(req.user.membershipEndDate) < new Date();
+
+  if (isNonMember || isExpired || isInactive || hasZeroDays || isDatePast) {
+    return res.status(403).json({
+      success: false,
+      requiresMembership: true,
+      message:
+        "Active membership pass required to reserve classes. Please activate or renew a membership tier.",
+    });
+  }
+
+  return next();
+};
+
+module.exports = { protect, admin, requireActiveMembership };
