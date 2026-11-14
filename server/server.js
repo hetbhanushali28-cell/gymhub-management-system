@@ -15,16 +15,13 @@ connectDB();
 const app = express();
 const server = http.createServer(app);
 
-// Socket.io setup for real-time notifications
-const allowedOrigins = [
-  "http://localhost:5173",
-  "http://127.0.0.1:5173",
-  process.env.CLIENT_URL,
-].filter(Boolean);
-
+// Socket.io setup for real-time notifications with dynamic CORS
 const io = new Server(server, {
   cors: {
-    origin: process.env.CLIENT_URL ? allowedOrigins : "*",
+    origin: (origin, callback) => {
+      // Allow all client origins (Vercel, localhost, preview URLs)
+      callback(null, true);
+    },
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
   },
@@ -51,7 +48,12 @@ io.on("connection", (socket) => {
 });
 
 // Middleware
-app.use(cors());
+app.use(
+  cors({
+    origin: (origin, callback) => callback(null, true),
+    credentials: true,
+  })
+);
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 

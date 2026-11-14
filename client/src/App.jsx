@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar";
+import LiveToast from "./components/LiveToast";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Home from "./pages/Home";
 import Classes from "./pages/Classes";
@@ -13,6 +14,7 @@ function App() {
     <BrowserRouter>
       <div className="flex min-h-screen flex-col">
         <Navbar />
+        <LiveToast />
         <main className="flex-grow">
           <Routes>
             <Route path="/" element={<Home />} />

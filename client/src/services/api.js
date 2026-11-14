@@ -1,6 +1,11 @@
 import axios from "axios";
 
-const API_URL = import.meta.env.VITE_API_URL || "/api";
+// In production, fallback directly to Render backend if env var is unset
+const API_URL =
+  import.meta.env.VITE_API_URL ||
+  (typeof window !== "undefined" && (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1")
+    ? "/api"
+    : "https://gymhub-management-system.onrender.com/api");
 
 const api = axios.create({
   baseURL: API_URL,
