@@ -1,6 +1,8 @@
 import { Link } from "react-router-dom";
+import useAuth from "../hooks/useAuth";
 
 function Home() {
+  const { user } = useAuth();
   const membershipPlans = [
     {
       name: "The Classic",
@@ -80,16 +82,35 @@ function Home() {
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link
               to="/classes"
-              className="w-full sm:w-auto rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 px-8 py-3.5 text-base font-bold text-slate-950 transition hover:from-amber-400 hover:to-amber-500 shadow-lg shadow-amber-500/20 active:scale-98"
+              className="w-full sm:w-auto rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 px-8 py-3.5 text-base font-bold text-slate-950 transition hover:from-amber-400 hover:to-amber-500 shadow-lg shadow-amber-500/20 active:scale-98 text-center"
             >
               Explore Live Schedule
             </Link>
-            <Link
-              to="/register"
-              className="w-full sm:w-auto rounded-xl border border-slate-700 bg-slate-800/80 px-8 py-3.5 text-base font-bold text-slate-200 transition hover:bg-slate-700 hover:border-slate-600 hover:text-white"
-            >
-              Become a Member
-            </Link>
+
+            {user ? (
+              user.role === "admin" ? (
+                <Link
+                  to="/admin/dashboard"
+                  className="w-full sm:w-auto rounded-xl border border-amber-500/50 bg-amber-500/10 px-8 py-3.5 text-base font-bold text-amber-300 transition hover:bg-amber-500 hover:text-slate-950 shadow-lg shadow-amber-500/10 text-center flex items-center justify-center gap-2"
+                >
+                  <span>🛡️</span> Admin Dashboard
+                </Link>
+              ) : (
+                <Link
+                  to="/member/dashboard"
+                  className="w-full sm:w-auto rounded-xl border border-amber-500/50 bg-amber-500/10 px-8 py-3.5 text-base font-bold text-amber-300 transition hover:bg-amber-500 hover:text-slate-950 shadow-lg shadow-amber-500/10 text-center flex items-center justify-center gap-2"
+                >
+                  <span>⚡</span> Member Portal
+                </Link>
+              )
+            ) : (
+              <Link
+                to="/register"
+                className="w-full sm:w-auto rounded-xl border border-slate-700 bg-slate-800/80 px-8 py-3.5 text-base font-bold text-slate-200 transition hover:bg-slate-700 hover:border-slate-600 hover:text-white text-center"
+              >
+                Become a Member
+              </Link>
+            )}
           </div>
         </div>
       </section>
@@ -144,7 +165,7 @@ function Home() {
       </section>
 
       {/* Membership Tiers (From Het's Wireframe Page 6) */}
-      <section className="bg-slate-900 px-6 py-24">
+      <section id="memberships" className="bg-slate-900 px-6 py-24 scroll-mt-16">
         <div className="mx-auto max-w-7xl">
           <div className="text-center mb-16">
             <span className="text-xs font-bold text-amber-400 uppercase tracking-widest">
@@ -207,20 +228,26 @@ function Home() {
 
                 <div className="mt-8 pt-6 border-t border-slate-800/80">
                   <Link
-                    to={`/register?tier=${encodeURIComponent(
-                      plan.name.includes("Classic")
-                        ? "Classic"
-                        : plan.name.includes("Annual")
-                        ? "Annual"
-                        : "VIP Elite"
-                    )}`}
+                    to={
+                      user
+                        ? (user.role === "admin" ? "/admin/dashboard" : "/member/dashboard")
+                        : `/register?tier=${encodeURIComponent(
+                            plan.name.includes("Classic")
+                              ? "Classic"
+                              : plan.name.includes("Annual")
+                              ? "Annual"
+                              : "VIP Elite"
+                          )}`
+                    }
                     className={`block w-full py-3 rounded-xl text-center text-xs font-bold transition shadow-sm ${
                       plan.popular
                         ? "bg-amber-500 text-slate-950 hover:bg-amber-400"
                         : "bg-slate-800 text-white hover:bg-slate-700"
                     }`}
                   >
-                    {plan.buttonText}
+                    {user
+                      ? (user.role === "admin" ? "Admin Controls →" : "Manage in Member Portal →")
+                      : plan.buttonText}
                   </Link>
                 </div>
               </div>

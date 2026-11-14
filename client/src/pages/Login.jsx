@@ -26,9 +26,9 @@ function Login() {
       if (from && from !== "/login" && from !== "/register") {
         navigate(from, { replace: true });
       } else if (user.role === "admin") {
-        navigate("/admin", { replace: true });
+        navigate("/admin/dashboard", { replace: true });
       } else {
-        navigate("/classes", { replace: true });
+        navigate("/member/dashboard", { replace: true });
       }
     }
   }, [user, navigate, from]);

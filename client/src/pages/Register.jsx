@@ -34,7 +34,11 @@ function Register() {
   // Redirect if already logged in
   useEffect(() => {
     if (user) {
-      navigate("/classes", { replace: true });
+      if (user.role === "admin") {
+        navigate("/admin/dashboard", { replace: true });
+      } else {
+        navigate("/member/dashboard", { replace: true });
+      }
     }
   }, [user, navigate]);
 

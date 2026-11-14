@@ -30,6 +30,14 @@ function App() {
               }
             />
             <Route
+              path="/member"
+              element={
+                <ProtectedRoute requiredRole="user">
+                  <MyBookings />
+                </ProtectedRoute>
+              }
+            />
+            <Route
               path="/member/dashboard"
               element={
                 <ProtectedRoute requiredRole="user">
