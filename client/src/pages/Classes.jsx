@@ -104,7 +104,7 @@ function Classes() {
   });
 
   return (
-    <div className="min-h-screen bg-slate-50 px-6 py-12">
+    <div className="min-h-screen bg-slate-50 px-4 sm:px-6 py-8 sm:py-12">
       <div className="mx-auto max-w-7xl">
         {/* Header */}
         <div className="mb-10 text-center max-w-2xl mx-auto">

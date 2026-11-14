@@ -37,6 +37,8 @@ function AdminDashboard() {
   // Live Broadcast state (from Het's PDF Page 7)
   const [broadcastText, setBroadcastText] = useState("");
   const [broadcastSuccess, setBroadcastSuccess] = useState(false);
+  const [latestBookingAlert, setLatestBookingAlert] = useState(null);
+  const [newBookingId, setNewBookingId] = useState(null);
 
   // Form states for creating a new class
   const [showForm, setShowForm] = useState(false);
@@ -83,6 +85,14 @@ function AdminDashboard() {
     // Real-Time Socket.IO Listeners
     function handleBookingCreated(newBooking) {
       setBookings((prev) => [newBooking, ...prev]);
+      setNewBookingId(newBooking._id);
+      setLatestBookingAlert({
+        userName: newBooking.user?.name || "A member",
+        classTitle: newBooking.gymClass?.title || "Gym Session",
+        time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+      });
+      setTimeout(() => setLatestBookingAlert(null), 10000);
+      setTimeout(() => setNewBookingId(null), 10000);
     }
 
     function handleBookingCancelled({ bookingId }) {
@@ -232,7 +242,7 @@ function AdminDashboard() {
   });
 
   return (
-    <div className="min-h-screen bg-slate-950 text-white px-6 py-12">
+    <div className="min-h-screen bg-slate-950 text-white px-4 sm:px-6 py-8 sm:py-12">
       <div className="mx-auto max-w-7xl">
         {/* Header (Facility Overview) */}
         <div className="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-slate-800 pb-6">
@@ -267,13 +277,19 @@ function AdminDashboard() {
             </button>
             <button
               onClick={() => setActiveTab("bookings")}
-              className={`px-3.5 py-2 rounded-lg text-xs font-bold transition cursor-pointer ${
+              className={`px-3.5 py-2 rounded-lg text-xs font-bold transition cursor-pointer relative ${
                 activeTab === "bookings"
                   ? "bg-amber-500 text-slate-950 shadow-md font-black"
                   : "text-slate-400 hover:text-white"
               }`}
             >
               Bookings ({bookings.length})
+              {latestBookingAlert && (
+                <span className="absolute -top-1 -right-1 flex h-3 w-3">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
+                </span>
+              )}
             </button>
             <button
               onClick={() => setActiveTab("members")}
@@ -298,8 +314,33 @@ function AdminDashboard() {
           </div>
         </div>
 
+        {/* Real-Time Live Booking Notification Banner */}
+        {latestBookingAlert && (
+          <div className="mb-6 p-4 rounded-2xl bg-emerald-500/10 border-2 border-emerald-500/50 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 animate-slide-in shadow-xl shadow-emerald-500/10">
+            <div className="flex items-center gap-3">
+              <span className="text-2xl animate-bounce">🎟️</span>
+              <div>
+                <p className="text-xs font-black text-emerald-400 uppercase tracking-wider flex items-center gap-1.5">
+                  <span className="h-2 w-2 rounded-full bg-emerald-400 animate-ping" />
+                  Live Spot Reserved via WebSocket!
+                </p>
+                <p className="text-xs text-slate-200 mt-0.5">
+                  <strong className="text-white">{latestBookingAlert.userName}</strong> just booked a spot in{" "}
+                  <strong className="text-amber-300">"{latestBookingAlert.classTitle}"</strong> at {latestBookingAlert.time}.
+                </p>
+              </div>
+            </div>
+            <button
+              onClick={() => setActiveTab("bookings")}
+              className="text-xs font-bold text-slate-950 bg-emerald-400 hover:bg-emerald-300 px-3.5 py-1.5 rounded-lg transition shrink-0 cursor-pointer"
+            >
+              View in Bookings Tab →
+            </button>
+          </div>
+        )}
+
         {/* Real-time Metric Cards (Directly matching Het's Wireframe Page 7) */}
-        <div className="grid grid-cols-1 sm:grid-cols-4 gap-5 mb-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5 mb-8">
           <div className="bg-slate-900 p-5 rounded-2xl border border-slate-800 shadow-sm flex items-center justify-between">
             <div>
               <p className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
@@ -590,7 +631,7 @@ function AdminDashboard() {
             )}
 
             {/* Classes Table */}
-            <div className="bg-slate-900 rounded-2xl shadow-sm border border-slate-800 overflow-hidden">
+            <div className="bg-slate-900 rounded-2xl shadow-sm border border-slate-800 overflow-hidden overflow-x-auto">
               <table className="min-w-full divide-y divide-slate-800">
                 <thead className="bg-slate-950 text-slate-400 text-[11px] font-bold uppercase tracking-wider">
                   <tr>
@@ -659,7 +700,7 @@ function AdminDashboard() {
               </span>
             </div>
 
-            <div className="bg-slate-900 rounded-2xl shadow-sm border border-slate-800 overflow-hidden">
+            <div className="bg-slate-900 rounded-2xl shadow-sm border border-slate-800 overflow-hidden overflow-x-auto">
               <table className="min-w-full divide-y divide-slate-800">
                 <thead className="bg-slate-950 text-slate-400 text-[11px] font-bold uppercase tracking-wider">
                   <tr>
@@ -671,7 +712,14 @@ function AdminDashboard() {
                 </thead>
                 <tbody className="bg-slate-900 divide-y divide-slate-800/80 text-xs">
                   {bookings.map((booking) => (
-                    <tr key={booking._id} className="hover:bg-slate-800/50 transition">
+                    <tr
+                      key={booking._id}
+                      className={`transition duration-700 ${
+                        booking._id === newBookingId
+                          ? "bg-emerald-500/25 border-l-4 border-emerald-400 animate-pulse"
+                          : "hover:bg-slate-800/50"
+                      }`}
+                    >
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="font-bold text-white text-sm">
                           {booking.user?.name || "Member"}
@@ -757,7 +805,7 @@ function AdminDashboard() {
               </div>
             </div>
 
-            <div className="bg-slate-900 rounded-2xl shadow-sm border border-slate-800 overflow-hidden">
+            <div className="bg-slate-900 rounded-2xl shadow-sm border border-slate-800 overflow-hidden overflow-x-auto">
               <table className="min-w-full divide-y divide-slate-800">
                 <thead className="bg-slate-950 text-slate-400 text-[11px] font-bold uppercase tracking-wider">
                   <tr>
