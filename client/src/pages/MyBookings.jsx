@@ -205,46 +205,46 @@ function MyBookings() {
           </div>
 
           {/* Sub Navigation matching Het's Wireframes (Page 7, 8, 9) */}
-          <div className="flex flex-wrap gap-1 bg-slate-900 rounded-xl p-1 border border-slate-800">
+          <div className="grid grid-cols-2 sm:flex sm:flex-wrap gap-1.5 bg-slate-900 rounded-2xl p-1.5 border border-slate-800 w-full md:w-auto">
             <button
               onClick={() => setActiveTab("dashboard")}
-              className={`px-3.5 py-2 rounded-lg text-xs font-bold transition cursor-pointer ${
+              className={`px-3.5 py-2.5 sm:py-2 rounded-xl text-xs font-bold transition cursor-pointer text-center flex items-center justify-center ${
                 activeTab === "dashboard"
                   ? "bg-amber-500 text-slate-950 shadow-md font-black"
-                  : "text-slate-400 hover:text-white"
+                  : "text-slate-400 hover:text-white hover:bg-slate-800/50"
               }`}
             >
               📊 Overview
             </button>
             <button
               onClick={() => setActiveTab("calendar")}
-              className={`px-3.5 py-2 rounded-lg text-xs font-bold transition cursor-pointer ${
+              className={`px-3.5 py-2.5 sm:py-2 rounded-xl text-xs font-bold transition cursor-pointer text-center flex items-center justify-center ${
                 activeTab === "calendar"
                   ? "bg-amber-500 text-slate-950 shadow-md font-black"
-                  : "text-slate-400 hover:text-white"
+                  : "text-slate-400 hover:text-white hover:bg-slate-800/50"
               }`}
             >
-              📅 Bookings & Calendar ({bookings.length})
+              📅 Bookings ({bookings.length})
             </button>
             <button
               onClick={() => setActiveTab("analytics")}
-              className={`px-3.5 py-2 rounded-lg text-xs font-bold transition cursor-pointer ${
+              className={`px-3.5 py-2.5 sm:py-2 rounded-xl text-xs font-bold transition cursor-pointer text-center flex items-center justify-center ${
                 activeTab === "analytics"
                   ? "bg-amber-500 text-slate-950 shadow-md font-black"
-                  : "text-slate-400 hover:text-white"
+                  : "text-slate-400 hover:text-white hover:bg-slate-800/50"
               }`}
             >
-              📈 Performance Analytics
+              📈 Analytics
             </button>
             <button
               onClick={() => setActiveTab("profile")}
-              className={`px-3.5 py-2 rounded-lg text-xs font-bold transition cursor-pointer ${
+              className={`px-3.5 py-2.5 sm:py-2 rounded-xl text-xs font-bold transition cursor-pointer text-center flex items-center justify-center ${
                 activeTab === "profile"
                   ? "bg-amber-500 text-slate-950 shadow-md font-black"
-                  : "text-slate-400 hover:text-white"
+                  : "text-slate-400 hover:text-white hover:bg-slate-800/50"
               }`}
             >
-              👤 Profile & Security
+              👤 Profile
             </button>
           </div>
         </div>

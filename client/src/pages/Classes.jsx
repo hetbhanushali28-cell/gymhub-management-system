@@ -146,14 +146,14 @@ function Classes() {
             </div>
 
             {/* Difficulty Filter Dropdown */}
-            <div className="flex items-center gap-2 w-full md:w-auto">
+            <div className="flex items-center justify-between sm:justify-start gap-2 w-full md:w-auto">
               <label className="text-xs font-semibold text-slate-600 shrink-0">
                 Difficulty:
               </label>
               <select
                 value={selectedDifficulty}
                 onChange={(e) => setSelectedDifficulty(e.target.value)}
-                className="rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-sm text-slate-800 outline-none focus:border-indigo-500 focus:bg-white"
+                className="flex-1 md:flex-initial rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-sm text-slate-800 outline-none focus:border-indigo-500 focus:bg-white cursor-pointer"
               >
                 {difficulties.map((diff) => (
                   <option key={diff} value={diff}>
@@ -165,13 +165,13 @@ function Classes() {
           </div>
 
           {/* Category Chips */}
-          <div className="flex flex-wrap items-center gap-2 pt-2 border-t border-slate-100">
-            <span className="text-xs font-semibold text-slate-500 mr-1">Category:</span>
+          <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 pt-2 border-t border-slate-100">
+            <span className="text-xs font-semibold text-slate-500 mr-1 shrink-0">Category:</span>
             {categories.map((cat) => (
               <button
                 key={cat}
                 onClick={() => setSelectedCategory(cat)}
-                className={`rounded-full px-3.5 py-1 text-xs font-semibold transition cursor-pointer ${
+                className={`rounded-full px-3 sm:px-3.5 py-1.5 sm:py-1 text-xs font-semibold transition cursor-pointer ${
                   selectedCategory === cat
                     ? "bg-indigo-600 text-white shadow-sm"
                     : "bg-slate-100 text-slate-600 hover:bg-slate-200"

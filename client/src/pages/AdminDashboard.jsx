@@ -264,52 +264,52 @@ function AdminDashboard() {
             </p>
           </div>
 
-          <div className="flex flex-wrap gap-1 bg-slate-900 rounded-xl p-1 border border-slate-800">
+          <div className="grid grid-cols-2 sm:flex sm:flex-wrap gap-1.5 bg-slate-900 rounded-2xl p-1.5 border border-slate-800 w-full sm:w-auto">
             <button
               onClick={() => setActiveTab("classes")}
-              className={`px-3.5 py-2 rounded-lg text-xs font-bold transition cursor-pointer ${
+              className={`px-3.5 py-2.5 sm:py-2 rounded-xl text-xs font-bold transition cursor-pointer text-center flex items-center justify-center ${
                 activeTab === "classes"
                   ? "bg-amber-500 text-slate-950 shadow-md font-black"
-                  : "text-slate-400 hover:text-white"
+                  : "text-slate-400 hover:text-white hover:bg-slate-800/50"
               }`}
             >
-              Classes ({classes.length})
+              🏋️ Classes ({classes.length})
             </button>
             <button
               onClick={() => setActiveTab("bookings")}
-              className={`px-3.5 py-2 rounded-lg text-xs font-bold transition cursor-pointer relative ${
+              className={`px-3.5 py-2.5 sm:py-2 rounded-xl text-xs font-bold transition cursor-pointer relative text-center flex items-center justify-center gap-1.5 ${
                 activeTab === "bookings"
                   ? "bg-amber-500 text-slate-950 shadow-md font-black"
-                  : "text-slate-400 hover:text-white"
+                  : "text-slate-400 hover:text-white hover:bg-slate-800/50"
               }`}
             >
-              Bookings ({bookings.length})
+              <span>🎟️ Bookings ({bookings.length})</span>
               {latestBookingAlert && (
-                <span className="absolute -top-1 -right-1 flex h-3 w-3">
+                <span className="relative flex h-2.5 w-2.5">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
+                  <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
                 </span>
               )}
             </button>
             <button
               onClick={() => setActiveTab("members")}
-              className={`px-3.5 py-2 rounded-lg text-xs font-bold transition cursor-pointer ${
+              className={`px-3.5 py-2.5 sm:py-2 rounded-xl text-xs font-bold transition cursor-pointer text-center flex items-center justify-center ${
                 activeTab === "members"
                   ? "bg-amber-500 text-slate-950 shadow-md font-black"
-                  : "text-slate-400 hover:text-white"
+                  : "text-slate-400 hover:text-white hover:bg-slate-800/50"
               }`}
             >
-              Members ({members.length})
+              👥 Members ({members.length})
             </button>
             <button
               onClick={() => setActiveTab("tiers")}
-              className={`px-3.5 py-2 rounded-lg text-xs font-bold transition cursor-pointer ${
+              className={`px-3.5 py-2.5 sm:py-2 rounded-xl text-xs font-bold transition cursor-pointer text-center flex items-center justify-center ${
                 activeTab === "tiers"
                   ? "bg-amber-500 text-slate-950 shadow-md font-black"
-                  : "text-slate-400 hover:text-white"
+                  : "text-slate-400 hover:text-white hover:bg-slate-800/50"
               }`}
             >
-              Tiers ({tiers.length})
+              👑 Tiers ({tiers.length})
             </button>
           </div>
         </div>
@@ -631,8 +631,13 @@ function AdminDashboard() {
             )}
 
             {/* Classes Table */}
-            <div className="bg-slate-900 rounded-2xl shadow-sm border border-slate-800 overflow-hidden overflow-x-auto">
-              <table className="min-w-full divide-y divide-slate-800">
+            <div className="bg-slate-900 rounded-2xl shadow-sm border border-slate-800 overflow-hidden">
+              <div className="px-4 py-2.5 bg-slate-950/60 border-b border-slate-800/80 flex items-center justify-between sm:hidden text-[11px] text-slate-400">
+                <span>👉 Swipe horizontally for full table</span>
+                <span className="font-bold text-amber-400">{classes.length} Classes</span>
+              </div>
+              <div className="overflow-x-auto">
+                <table className="min-w-[640px] w-full divide-y divide-slate-800">
                 <thead className="bg-slate-950 text-slate-400 text-[11px] font-bold uppercase tracking-wider">
                   <tr>
                     <th className="px-6 py-3.5 text-left">Class & Trainer</th>
@@ -686,6 +691,7 @@ function AdminDashboard() {
                   })}
                 </tbody>
               </table>
+              </div>
             </div>
           </div>
         )}
@@ -700,8 +706,13 @@ function AdminDashboard() {
               </span>
             </div>
 
-            <div className="bg-slate-900 rounded-2xl shadow-sm border border-slate-800 overflow-hidden overflow-x-auto">
-              <table className="min-w-full divide-y divide-slate-800">
+            <div className="bg-slate-900 rounded-2xl shadow-sm border border-slate-800 overflow-hidden">
+              <div className="px-4 py-2.5 bg-slate-950/60 border-b border-slate-800/80 flex items-center justify-between sm:hidden text-[11px] text-slate-400">
+                <span>👉 Swipe horizontally for full table</span>
+                <span className="font-bold text-emerald-400">{bookings.length} Bookings</span>
+              </div>
+              <div className="overflow-x-auto">
+                <table className="min-w-[640px] w-full divide-y divide-slate-800">
                 <thead className="bg-slate-950 text-slate-400 text-[11px] font-bold uppercase tracking-wider">
                   <tr>
                     <th className="px-6 py-3.5 text-left">Member</th>
@@ -751,6 +762,7 @@ function AdminDashboard() {
                   )}
                 </tbody>
               </table>
+              </div>
             </div>
           </div>
         )}
@@ -767,8 +779,8 @@ function AdminDashboard() {
               </div>
 
               {/* Search & Filter Controls matching Het's Wireframe Page 7 */}
-              <div className="flex flex-wrap items-center gap-3 w-full sm:w-auto">
-                <div className="relative flex-1 sm:w-64">
+              <div className="flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-2.5 w-full sm:w-auto">
+                <div className="relative w-full sm:w-64">
                   <span className="absolute left-3 top-2.5 text-xs text-slate-500">🔍</span>
                   <input
                     type="text"
@@ -779,34 +791,41 @@ function AdminDashboard() {
                   />
                 </div>
 
-                <select
-                  value={statusFilter}
-                  onChange={(e) => setStatusFilter(e.target.value)}
-                  className="rounded-xl bg-slate-900 border border-slate-800 px-3 py-2 text-xs text-slate-300 outline-none focus:border-amber-500 cursor-pointer"
-                >
-                  <option value="All">All Statuses</option>
-                  <option value="Active">Active</option>
-                  <option value="Expiring Soon">Expiring Soon</option>
-                  <option value="Expired">Expired</option>
-                  <option value="Inactive">Inactive</option>
-                </select>
+                <div className="grid grid-cols-2 sm:flex gap-2 w-full sm:w-auto">
+                  <select
+                    value={statusFilter}
+                    onChange={(e) => setStatusFilter(e.target.value)}
+                    className="w-full sm:w-auto rounded-xl bg-slate-900 border border-slate-800 px-3 py-2 text-xs text-slate-300 outline-none focus:border-amber-500 cursor-pointer"
+                  >
+                    <option value="All">All Statuses</option>
+                    <option value="Active">Active</option>
+                    <option value="Expiring Soon">Expiring Soon</option>
+                    <option value="Expired">Expired</option>
+                    <option value="Inactive">Inactive</option>
+                  </select>
 
-                <select
-                  value={tierFilter}
-                  onChange={(e) => setTierFilter(e.target.value)}
-                  className="rounded-xl bg-slate-900 border border-slate-800 px-3 py-2 text-xs text-slate-300 outline-none focus:border-amber-500 cursor-pointer"
-                >
-                  <option value="All">All Tiers</option>
-                  <option value="VIP Elite">VIP Elite</option>
-                  <option value="Annual">Annual</option>
-                  <option value="Classic">Classic</option>
-                  <option value="Non-Member">Non-Member</option>
-                </select>
+                  <select
+                    value={tierFilter}
+                    onChange={(e) => setTierFilter(e.target.value)}
+                    className="w-full sm:w-auto rounded-xl bg-slate-900 border border-slate-800 px-3 py-2 text-xs text-slate-300 outline-none focus:border-amber-500 cursor-pointer"
+                  >
+                    <option value="All">All Tiers</option>
+                    <option value="VIP Elite">VIP Elite</option>
+                    <option value="Annual">Annual</option>
+                    <option value="Classic">Classic</option>
+                    <option value="Non-Member">Non-Member</option>
+                  </select>
+                </div>
               </div>
             </div>
 
-            <div className="bg-slate-900 rounded-2xl shadow-sm border border-slate-800 overflow-hidden overflow-x-auto">
-              <table className="min-w-full divide-y divide-slate-800">
+            <div className="bg-slate-900 rounded-2xl shadow-sm border border-slate-800 overflow-hidden">
+              <div className="px-4 py-2.5 bg-slate-950/60 border-b border-slate-800/80 flex items-center justify-between sm:hidden text-[11px] text-slate-400">
+                <span>👉 Swipe horizontally for full table</span>
+                <span className="font-bold text-amber-400">{filteredMembers.length} Members</span>
+              </div>
+              <div className="overflow-x-auto">
+                <table className="min-w-[640px] w-full divide-y divide-slate-800">
                 <thead className="bg-slate-950 text-slate-400 text-[11px] font-bold uppercase tracking-wider">
                   <tr>
                     <th className="px-6 py-3.5 text-left">Member Name</th>
@@ -880,6 +899,7 @@ function AdminDashboard() {
                   )}
                 </tbody>
               </table>
+              </div>
             </div>
           </div>
         )}

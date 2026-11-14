@@ -113,52 +113,76 @@ function Navbar() {
 
       {/* Mobile Menu */}
       {menuOpen && (
-        <div className="border-t border-slate-800 bg-slate-900 px-6 py-4 md:hidden">
-          <div className="flex flex-col gap-3">
-            <Link to="/" onClick={closeMenu} className="hover:text-indigo-400 py-1">
-              Home
+        <div className="border-t border-slate-800 bg-slate-900 px-5 py-4 md:hidden animate-slide-in">
+          <div className="flex flex-col gap-1.5">
+            <Link
+              to="/"
+              onClick={closeMenu}
+              className="px-3 py-2.5 rounded-xl text-sm font-semibold text-slate-200 hover:text-white hover:bg-slate-800/80 transition"
+            >
+              🏠 Home
             </Link>
-            <Link to="/classes" onClick={closeMenu} className="hover:text-indigo-400 py-1">
-              Classes
+            <Link
+              to="/classes"
+              onClick={closeMenu}
+              className="px-3 py-2.5 rounded-xl text-sm font-semibold text-slate-200 hover:text-white hover:bg-slate-800/80 transition"
+            >
+              🏋️ Live Classes
             </Link>
 
             {user ? (
               <>
                 {user.role === "admin" ? (
-                  <Link to="/admin/dashboard" onClick={closeMenu} className="text-amber-400 font-semibold py-1">
-                    🛡️ Admin Dashboard
+                  <Link
+                    to="/admin/dashboard"
+                    onClick={closeMenu}
+                    className="px-3 py-2.5 rounded-xl text-sm font-bold text-amber-400 hover:bg-slate-800/80 transition flex items-center gap-2"
+                  >
+                    <span>🛡️</span> Admin Dashboard
                   </Link>
                 ) : (
-                  <Link to="/member/dashboard" onClick={closeMenu} className="hover:text-amber-400 py-1">
-                    Member Portal
+                  <Link
+                    to="/member/dashboard"
+                    onClick={closeMenu}
+                    className="px-3 py-2.5 rounded-xl text-sm font-bold text-amber-400 hover:bg-slate-800/80 transition flex items-center gap-2"
+                  >
+                    <span>⚡</span> Member Portal
                   </Link>
                 )}
-                <div className="mt-3 border-t border-slate-800 pt-3 flex items-center justify-between">
+                <div className="mt-2 border-t border-slate-800/80 pt-3 flex items-center justify-between px-2">
                   <div>
-                    <p className="text-xs font-bold text-slate-200">{user.name}</p>
-                    <span className="text-[10px] text-slate-400 uppercase">{user.role}</span>
+                    <p className="text-xs font-bold text-slate-100">{user.name}</p>
+                    <span
+                      className={`inline-block px-1.5 py-0.2 rounded text-[10px] font-bold uppercase tracking-wider mt-0.5 ${
+                        user.role === "admin"
+                          ? "bg-amber-500/20 text-amber-300 border border-amber-500/30"
+                          : "bg-emerald-500/20 text-emerald-300 border border-emerald-500/30"
+                      }`}
+                    >
+                      {user.role === "admin" ? "ADMIN" : user.membershipTier || "MEMBER"}
+                    </span>
                   </div>
                   <button
                     onClick={handleLogout}
-                    className="rounded-lg bg-rose-600/90 px-3 py-1.5 text-xs font-semibold text-white"
+                    className="rounded-lg bg-rose-600/90 hover:bg-rose-600 px-3 py-1.5 text-xs font-bold text-white transition cursor-pointer"
                   >
                     Logout
                   </button>
                 </div>
               </>
             ) : (
-              <div className="mt-2 flex flex-col gap-2 border-t border-slate-800 pt-3">
+              <div className="mt-2 flex flex-col gap-2 border-t border-slate-800/80 pt-3">
                 <Link
                   to="/login"
                   onClick={closeMenu}
-                  className="rounded-lg border border-slate-700 py-2 text-center text-sm"
+                  className="rounded-xl border border-slate-700 py-2.5 text-center text-sm font-semibold text-slate-200 hover:bg-slate-800"
                 >
                   Login
                 </Link>
                 <Link
                   to="/register"
                   onClick={closeMenu}
-                  className="rounded-lg bg-indigo-600 py-2 text-center text-sm font-semibold"
+                  className="rounded-xl bg-indigo-600 py-2.5 text-center text-sm font-bold text-white shadow-md shadow-indigo-600/30"
                 >
                   Register
                 </Link>

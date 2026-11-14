@@ -215,3 +215,81 @@ docker ps
    `https://gymhub-frontend.vercel.app`
 7. *(Note: Our `client/vercel.json` and root `vercel.json` have already been created with SPA rewrites to ensure deep routing like `/classes` or `/admin/dashboard` never produces 404 errors on refresh!)*
 
+---
+
+## 5. Live Production Deployment Information
+
+| Service | Host / Platform | Live Endpoint / Connection |
+|---|---|---|
+| **Frontend (Client)** | **Vercel** | [https://gymhub-het.vercel.app](https://gymhub-het.vercel.app) |
+| **Backend (API & WebSockets)** | **Render (Docker Container)** | [https://gymhub-management-system.onrender.com](https://gymhub-management-system.onrender.com) |
+| **Cloud Database** | **MongoDB Atlas** | `cluster0.jecnqcc.mongodb.net/gym-management` (AWS Mumbai `ap-south-1`) |
+| **GitHub Repository** | **GitHub** | [https://github.com/hetbhanushali28-cell/gymhub-management-system](https://github.com/hetbhanushali28-cell/gymhub-management-system) |
+
+---
+
+## 6. Viva Theory Masterclass: State Management & React Hooks
+
+### Q1: What is State Management in React, and why is it needed?
+**Answer:**
+State is dynamic data inside a component that determines what gets rendered on the screen. Whenever state changes, React automatically re-evaluates the component virtual DOM and re-renders the UI with the updated data.
+
+### Q2: What are the 4 Types of State in React?
+1. **Local Component State:** State managed exclusively inside a single component using `useState` (e.g., `menuOpen` in `Navbar`, `searchQuery` in `Classes`, or form input states).
+2. **Global / Shared State:** Data needed across multiple components in different parts of the component tree (e.g., currently authenticated user in `AuthContext`, or live notifications in `SocketContext`).
+3. **Server / Remote State:** Data fetched from a database or API over HTTP (e.g., class listings, member records, and bookings in MongoDB).
+4. **URL / Route State:** State maintained in the browser address bar query params or pathname using `react-router-dom` (e.g., `?tier=VIP%20Elite`, `/admin/dashboard`).
+
+### Q3: What is "Prop Drilling" and how does GymHub solve it?
+**Answer:**
+Prop drilling occurs when you have to pass props down through multiple layers of intermediate components that do not actually need the data, just to reach a deeply nested child component.  
+**GymHub Solution:** We use **React Context API** (`createContext` + `useContext`). By wrapping the top-level `<App>` with `<AuthProvider>` and `<SocketProvider>`, any component anywhere in the tree can consume `user`, `login()`, `logout()`, or `socket` directly with one custom hook (`useAuth()` or `useSocket()`) without any prop drilling!
+
+### Q4: React Context API vs. Redux: Why did you choose Context API?
+**Answer:**
+Redux adds substantial boilerplate (actions, reducers, dispatchers, store configuration). For a medium-scale MERN project like GymHub, React Context API is built directly into React core, provides zero extra bundle overhead, is lightweight, and perfectly handles our authentication sessions and real-time socket connections.
+
+---
+
+## 7. Viva Theory Masterclass: WebSockets & Socket.IO Real-Time Engine
+
+### Q1: What is the difference between standard HTTP and WebSockets?
+| Feature | Traditional HTTP (REST) | WebSockets (Socket.IO) |
+|---|---|---|
+| **Protocol** | `http://` or `https://` | `ws://` or `wss://` |
+| **Connection Model** | Request-Response (Half-duplex). Client requests, server responds, connection closes. | Persistent Full-Duplex TCP connection. Stays open continuously. |
+| **Latency** | High overhead (headers sent with every single request, requires polling). | Ultra-low latency (sub-50ms message packets over open socket). |
+| **Server-Push** | Impossible without long-polling or SSE. | Native bidirectional push. Server can send messages to clients at any millisecond. |
+
+### Q2: How does the Admin see a new booking in real time when a Member reserves a class?
+**Answer:**
+1. A member logs into `https://gymhub-het.vercel.app` on their phone or browser and clicks **"Reserve Spot"** on a class.
+2. The browser sends a `POST /api/bookings` request to the Render backend.
+3. The Express controller verifies the user's active membership pass and database capacity in MongoDB Atlas.
+4. If valid, the backend saves the new booking to MongoDB, decrements the available slots, and immediately triggers:
+   ```javascript
+   req.io.emit("booking_created", populatedBooking);
+   req.io.emit("class_capacity_updated", { classId, availableSlots });
+   req.io.emit("notification", { type: "booking_created", title: "New Booking Alert", ... });
+   ```
+5. On the Admin's device, the Socket.IO client catches `booking_created` and `notification`:
+   - It appends the new booking to the top of the Bookings table with a pulsing emerald highlight.
+   - It updates the live available slot counters and utilization metrics without needing a page refresh!
+   - A floating `LiveToast` banner flashes across the screen notifying the admin of the reservation.
+
+---
+
+## 8. Mobile Responsiveness & Chrome UI/UX Optimization
+
+1. **Fluid Responsive Grids:**
+   - On desktop: Multi-column layouts (4-column metric cards, 3-column class cards).
+   - On smartphone: Clean 1-column cards and 2x2 tab navigation (`grid grid-cols-2 sm:flex sm:flex-wrap`) for touch-friendly ergonomics.
+2. **Horizontal Table Swiping (`overflow-x-auto` + `min-w-[640px]`):**
+   - Data tables on smartphones retain their comfortable spacing without columns collapsing.
+   - An intuitive mobile indicator ("👉 Swipe horizontally for full table") guides phone users.
+3. **Mobile Dropdowns & Notification Bell:**
+   - On mobile screens, the notification bell uses viewport-relative positioning (`fixed inset-x-3 top-16`) with an explicit "✕" close button and `touchstart` support to ensure one-tap dismissal on iOS Safari and Android Chrome.
+4. **Touch Targets:**
+   - All interactive controls have minimum 44px tap targets adhering to Apple HIG and Google Material guidelines.
+
+

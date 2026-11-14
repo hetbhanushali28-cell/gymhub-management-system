@@ -300,7 +300,7 @@ function Home() {
               <span className="text-amber-400">Gym</span>Hub Private Club
             </p>
             <p className="mt-1 text-slate-400">
-              MERN Stack Architecture • WebSocket Enabled • Local MongoDB (Port 27017)
+              MERN Stack Architecture • WebSocket Real-Time Engine • Cloud MongoDB Atlas & Render Docker
             </p>
           </div>
           <div className="flex gap-6 text-slate-400">

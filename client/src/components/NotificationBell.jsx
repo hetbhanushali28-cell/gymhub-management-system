@@ -43,7 +43,7 @@ export default function NotificationBell() {
     };
   }, []);
 
-  // Close dropdown on click outside
+  // Close dropdown on click or touch outside
   useEffect(() => {
     function handleClickOutside(e) {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
@@ -51,7 +51,11 @@ export default function NotificationBell() {
       }
     }
     document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
+    document.addEventListener("touchstart", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("touchstart", handleClickOutside);
+    };
   }, []);
 
   const handleToggle = () => {
@@ -110,44 +114,54 @@ export default function NotificationBell() {
 
       {/* Notifications Dropdown */}
       {isOpen && (
-        <div className="absolute right-0 mt-3 w-80 sm:w-96 rounded-2xl bg-white shadow-2xl border border-slate-200 py-3 z-50 text-slate-800">
-          <div className="flex items-center justify-between px-4 pb-3 border-b border-slate-100">
+        <div className="fixed inset-x-3 top-16 sm:absolute sm:inset-auto sm:right-0 sm:mt-3 sm:w-96 rounded-2xl bg-slate-900/95 backdrop-blur-md shadow-2xl border border-slate-800 py-3 z-50 text-white animate-slide-in">
+          <div className="flex items-center justify-between px-4 pb-3 border-b border-slate-800">
             <div className="flex items-center gap-2">
-              <span className="font-bold text-slate-900">Live Notifications</span>
-              <span className="rounded-full bg-indigo-50 px-2 py-0.5 text-xs font-medium text-indigo-700">
-                Socket.IO
+              <span className="font-bold text-sm text-white">Live Notifications</span>
+              <span className="rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider flex items-center gap-1">
+                <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                Live
               </span>
             </div>
-            {notifications.length > 0 && (
+            <div className="flex items-center gap-2">
+              {notifications.length > 0 && (
+                <button
+                  onClick={clearAll}
+                  className="text-xs text-slate-400 hover:text-amber-400 font-medium transition cursor-pointer"
+                >
+                  Clear all
+                </button>
+              )}
               <button
-                onClick={clearAll}
-                className="text-xs text-slate-400 hover:text-slate-700 font-medium transition"
+                onClick={() => setIsOpen(false)}
+                className="text-slate-400 hover:text-white p-1 text-sm rounded-lg hover:bg-slate-800 transition cursor-pointer"
+                aria-label="Close notifications"
               >
-                Clear all
+                ✕
               </button>
-            )}
+            </div>
           </div>
 
-          <div className="max-h-80 overflow-y-auto divide-y divide-slate-100">
+          <div className="max-h-80 overflow-y-auto divide-y divide-slate-800/80">
             {notifications.length === 0 ? (
-              <div className="py-8 text-center text-slate-400 text-sm">
+              <div className="py-8 text-center text-slate-400 text-xs">
                 <span className="text-3xl block mb-2">🔕</span>
                 No notifications yet.
-                <p className="text-xs text-slate-400 mt-1">
-                  Actions in another tab will trigger live alerts here!
+                <p className="text-[11px] text-slate-500 mt-1">
+                  Announcements and spot bookings will flash here live!
                 </p>
               </div>
             ) : (
               notifications.map((notif) => (
                 <div
                   key={notif.id}
-                  className="p-3 hover:bg-slate-50 transition flex items-start gap-3"
+                  className="p-3.5 hover:bg-slate-800/60 transition flex items-start gap-3"
                 >
                   <span className="text-xl shrink-0 mt-0.5">{getIcon(notif.type)}</span>
                   <div className="flex-1 min-w-0">
-                    <p className="text-xs font-bold text-slate-800">{notif.title}</p>
-                    <p className="text-xs text-slate-600 mt-0.5 leading-relaxed">{notif.message}</p>
-                    <span className="text-[10px] text-slate-400 mt-1 block">
+                    <p className="text-xs font-bold text-white">{notif.title}</p>
+                    <p className="text-xs text-slate-300 mt-0.5 leading-relaxed">{notif.message}</p>
+                    <span className="text-[10px] text-amber-400/80 mt-1 block">
                       {notif.timestamp}
                     </span>
                   </div>
