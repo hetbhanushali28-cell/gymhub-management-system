@@ -291,5 +291,36 @@ Redux adds substantial boilerplate (actions, reducers, dispatchers, store config
    - On mobile screens, the notification bell uses viewport-relative positioning (`fixed inset-x-3 top-16`) with an explicit "✕" close button and `touchstart` support to ensure one-tap dismissal on iOS Safari and Android Chrome.
 4. **Touch Targets:**
    - All interactive controls have minimum 44px tap targets adhering to Apple HIG and Google Material guidelines.
+5. **Ultra-Narrow Screen Safety (down to 320px):**
+   - Replaced fixed widths with fluid responsive padding (`px-3 sm:px-6`, `p-4 sm:p-8`).
+   - Dynamic typography (`text-xl sm:text-2xl sm:text-3xl break-words`) prevents brand title clipping.
+   - Reflowed 1-Click demo fill items into a 1-column layout on viewports under 380px (`grid-cols-1 min-[380px]:grid-cols-2`) to eliminate button overlap on split-screen or narrow devices.
+
+---
+
+## 9. Viva Theory Masterclass: Data Validation & Role-Based Access Control (RBAC)
+
+### Q1: How does GymHub perform Data Validation?
+**Answer:**
+We implement dual-layer data validation:
+1. **Frontend Validation:** Form checks on React (`onChange`, `onSubmit`, email regex, password minimum lengths) providing instant feedback before network dispatch.
+2. **Backend Validation (`express-validator`):** Middleware chains on Express routes (`registerValidator`, `loginValidator`, `createBookingValidator`, `createClassValidator`, `createTierValidator`, `updateProfileValidator`, `renewMembershipValidator`).
+   - Standardized 400 response format: `{ success: false, message: "Validation failed", errors: [{ field, message }] }`.
+   - Protects database from malformed payloads, injection, and invalid data types.
+
+### Q2: How does Role-Based Access Control (RBAC) work in GymHub?
+**Answer:**
+We enforce 3 clear tiers of authorization:
+1. **Admin (`role: "admin"`):**
+   - Verified via `protect` + `admin` middleware on routes (`POST /api/classes`, `DELETE /api/classes/:id`, `GET /api/bookings`, `GET /api/auth/members`, `POST /api/tiers`).
+   - Prohibited from reserving member spots via `requireActiveMembership` (returns HTTP 403: *"Administrators cannot book member classes"*).
+2. **Active Member (`role: "user"` with Active Pass):**
+   - Verified via `protect` + `requireActiveMembership` middleware on `POST /api/bookings`.
+   - Requires `membershipStatus: "Active"`, `daysRemaining > 0`, and valid expiry date.
+3. **Non-Member / Guest (`membershipTier: "Non-Member"`):**
+   - Can view the live schedule and facility info.
+   - Class reservations are strictly blocked on the backend with HTTP 403 (`{ success: false, requiresMembership: true }`).
+   - On the frontend, reservation buttons are locked (`🔒 Reserve (Membership Required)`) and prompt the user to activate a membership pass.
+
 
 
