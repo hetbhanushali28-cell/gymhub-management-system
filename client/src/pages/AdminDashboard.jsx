@@ -25,6 +25,7 @@ function AdminDashboard() {
 
   // Tier form state (Module 2)
   const [showTierForm, setShowTierForm] = useState(false);
+  const [tierFormErrors, setTierFormErrors] = useState([]);
   const [tierFormData, setTierFormData] = useState({
     name: "",
     price: "",
@@ -177,6 +178,7 @@ function AdminDashboard() {
   // Membership Tier Handlers (Module 2)
   const handleCreateTier = async (e) => {
     e.preventDefault();
+    setTierFormErrors([]);
     try {
       const res = await api.post("/tiers", {
         ...tierFormData,
@@ -195,7 +197,12 @@ function AdminDashboard() {
         popular: false,
       });
     } catch (err) {
-      alert(err.response?.data?.message || "Failed to create tier");
+      const errorData = err.response?.data;
+      if (errorData?.errors && Array.isArray(errorData.errors) && errorData.errors.length > 0) {
+        setTierFormErrors(errorData.errors.map((e) => e.message));
+      } else {
+        setTierFormErrors([errorData?.message || "Failed to create tier"]);
+      }
     }
   };
 
@@ -915,7 +922,10 @@ function AdminDashboard() {
                 </p>
               </div>
               <button
-                onClick={() => setShowTierForm(!showTierForm)}
+                onClick={() => {
+                  setShowTierForm(!showTierForm);
+                  setTierFormErrors([]);
+                }}
                 className="bg-amber-500 hover:bg-amber-400 text-slate-950 px-4 py-2.5 rounded-xl font-bold text-xs shadow-md transition flex items-center gap-1.5 cursor-pointer"
               >
                 {showTierForm ? "Cancel" : "+ Add New Tier"}
@@ -929,13 +939,26 @@ function AdminDashboard() {
                 className="bg-slate-900 p-6 rounded-2xl shadow-xl border border-slate-800 space-y-4 animate-fadeIn"
               >
                 <h3 className="text-sm font-bold text-white">Create Membership Tier</h3>
+
+                {tierFormErrors.length > 0 && (
+                  <div className="rounded-xl bg-rose-500/10 p-3.5 border border-rose-500/30">
+                    <p className="text-xs font-bold text-rose-300 mb-1">Please fix the following:</p>
+                    <ul className="list-disc list-inside text-xs text-rose-400 space-y-1">
+                      {tierFormErrors.map((err, i) => (
+                        <li key={i}>{err}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div>
                     <label className="block text-xs font-bold text-slate-400 mb-1">
-                      Tier Name
+                      Tier Name (Min. 2 characters)
                     </label>
                     <input
                       required
+                      minLength={2}
+                      maxLength={50}
                       type="text"
                       value={tierFormData.name}
                       onChange={(e) => setTierFormData({ ...tierFormData, name: e.target.value })}
@@ -974,14 +997,16 @@ function AdminDashboard() {
 
                 <div>
                   <label className="block text-xs font-bold text-slate-400 mb-1">
-                    Description
+                    Description (Min. 5 characters)
                   </label>
                   <input
                     required
+                    minLength={5}
+                    maxLength={500}
                     type="text"
                     value={tierFormData.description}
                     onChange={(e) => setTierFormData({ ...tierFormData, description: e.target.value })}
-                    placeholder="Short description of tier privileges"
+                    placeholder="Short description of tier privileges (e.g. All-inclusive facility access and recovery)"
                     className="w-full border border-slate-800 bg-slate-950 rounded-xl px-3.5 py-2.5 text-xs text-white outline-none focus:border-amber-500"
                   />
                 </div>
